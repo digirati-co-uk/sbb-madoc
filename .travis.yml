@@ -29,7 +29,6 @@ cache:
     - $HOME/docker
     - $HOME/.local
 
-
 # Example of Docker deployment (push to docker + optional ECS)
 #deploy:
 #  # Publishing tags

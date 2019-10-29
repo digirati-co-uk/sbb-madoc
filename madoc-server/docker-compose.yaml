@@ -1,14 +1,14 @@
 version: "3"
 services:
   omeka-ecosystem:
-    container_name: madoc-sbb-omeka
+    container_name: madoc-sbb-standalone-omeka
     build:
-      context: .
+      context: ../
     links:
       - mysql
     environment:
       - APP_ENV=${APP_ENV}
-      - OMEKA__DATABASE_HOST=madoc-sbb-database
+      - OMEKA__DATABASE_HOST=madoc-sbb-standalone-database
       - OMEKA__DATABASE_NAME=${MYSQL_DATABASE}
       - OMEKA__DATABASE_USER=${MYSQL_USER}
       - OMEKA__DATABASE_PASSWORD=${MYSQL_PASSWORD}
@@ -19,14 +19,12 @@ services:
     ports:
       - "8898:80"
     volumes:
-      - ./custom-madoc-theme:/srv/omeka/themes/custom-madoc-theme:Z
-      - ./translations/s:/srv/omeka/translations/s:Z
-      - ./var/files:/srv/omeka/files:Z
+      - /private/var/files:/srv/omeka/files:Z
 
   mysql:
-    container_name: madoc-sbb-database
+    container_name: madoc-sbb-standalone-database
     build:
-      context: ./
+      context: ../
       dockerfile: Dockerfile.db
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
