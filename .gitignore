@@ -1,5 +1,4 @@
 var/es
 var/files
 !var/.gitkeep
-elucidate-server/.env
-madoc-server/.env
+.env

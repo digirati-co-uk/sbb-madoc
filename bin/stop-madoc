@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+echo "Stopping Madoc server"
+
+while test $# -gt 0; do
+  case "$1" in
+    -l|--local)
+        docker-compose -f ./madoc-server/docker-compose.yaml -f ./madoc-server/docker-compose.local.yaml stop
+      exit 0;
+    shift
+    ;;
+  esac
+done;
+
+docker-compose -f ./madoc-server/docker-compose.yaml stop
