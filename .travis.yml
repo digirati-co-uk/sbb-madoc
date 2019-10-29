@@ -9,7 +9,7 @@ before_install:
 
 install:
   - travis_retry docker-compose pull
-  - docker build -t example-madoc-config .
+  - docker build -t sbb-madoc-config .
 
 before_script:
   - pip install --user awscli

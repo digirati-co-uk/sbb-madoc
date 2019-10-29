@@ -1,0 +1,23 @@
+version: "3"
+services:
+  annotation-server:
+    container_name: sbb-annotation-server
+    image: "garyttierneydi/elucidate-server:1.4.3-SNAPSHOT"
+    links:
+      - annotation-database:database
+    environment:
+      - DATABASE_USER=postgres
+      - CATALINA_OPTS=-Ddb.url=jdbc:postgresql://database:5432/annotations -Ddb.user="postgres" -Ddb.password=$MYSQL_PASSWORD
+      # 1.2.x additions
+      - BASE_HOST=${ELUCIDATE_BASE_HOST}
+      - BASE_PORT=${ELUCIDATE_BASE_PORT}
+    ports:
+      - 8899:8080
+
+  annotation-database:
+    container_name: sbb-annotation-database
+    image: "garyttierneydi/elucidate-database:1.4.3-SNAPSHOT"
+    environment:
+      - POSTGRES_DB=annotations
+    volumes:
+      - /private/var/lib/postgresql:/var/lib/postgresql
