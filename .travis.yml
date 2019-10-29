@@ -14,6 +14,7 @@ install:
 before_script:
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
+  - cp .env.dist .env
   - docker-compose up -d
   - ./.travis/wait-for-omeka.sh
 
