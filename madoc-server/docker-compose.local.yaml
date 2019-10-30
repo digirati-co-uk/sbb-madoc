@@ -3,3 +3,9 @@ services:
   omeka-ecosystem:
     volumes:
       - ../var/files:/srv/omeka/files:Z
+  elasticsearch:
+    volumes:
+      - ../var/es:/usr/share/elasticsearch/data:Z
+  mysql:
+    volumes:
+      - ../var/mysql:/var/lib/mysql:Z

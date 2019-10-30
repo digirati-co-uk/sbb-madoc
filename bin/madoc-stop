@@ -9,6 +9,11 @@ while test $# -gt 0; do
       exit 0;
     shift
     ;;
+    -d|--down)
+        docker-compose -f ./madoc-server/docker-compose.yaml -f ./madoc-server/docker-compose.local.yaml down
+      exit 0;
+    shift
+    ;;
   esac
 done;
 
