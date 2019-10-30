@@ -1,11 +1,25 @@
 version: "3"
 services:
   omeka-ecosystem:
+    links:
+      - mysql
     volumes:
       - ../var/files:/srv/omeka/files:Z
+    environment:
+      - OMEKA__DATABASE_HOST=${MYSQL_HOST:-madoc-sbb-standalone-database}
   elasticsearch:
     volumes:
       - ../var/es:/usr/share/elasticsearch/data:Z
   mysql:
+    container_name: madoc-sbb-standalone-database
+    build:
+      context: ../
+      dockerfile: Dockerfile.db
     volumes:
       - ../var/mysql:/var/lib/mysql:Z
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_PORT=${MYSQL_PORT}

@@ -1,6 +1,5 @@
 version: "3"
 services:
   annotation-database:
-    # Change volume for local testing
     volumes:
       - ../var/lib/postgresql:/var/lib/postgresql

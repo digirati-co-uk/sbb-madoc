@@ -4,11 +4,9 @@ services:
     container_name: madoc-sbb-standalone-omeka
     build:
       context: ../
-    links:
-      - mysql
     environment:
       - APP_ENV=${APP_ENV}
-      - OMEKA__DATABASE_HOST=madoc-sbb-standalone-database
+      - OMEKA__DATABASE_HOST=${MYSQL_HOST:-madoc-sbb-standalone-database}
       - OMEKA__DATABASE_NAME=${MYSQL_DATABASE}
       - OMEKA__DATABASE_USER=${MYSQL_USER}
       - OMEKA__DATABASE_PASSWORD=${MYSQL_PASSWORD}
@@ -30,21 +28,6 @@ services:
     volumes:
       - /private/var/files:/srv/omeka/files:Z
 
-  mysql:
-    container_name: madoc-sbb-standalone-database
-    build:
-      context: ../
-      dockerfile: Dockerfile.db
-    volumes:
-      - /private/var/mysql:/var/lib/mysql:Z
-    environment:
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_PORT=${MYSQL_PORT}
-
-
   # 1.2.x additions
   elasticsearch:
     container_name: madoc-sbb-elasticsearch
@@ -54,7 +37,7 @@ services:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "discovery.type=single-node"
     volumes:
-      - /private/var/es:/usr/share/elasticsearch/data:Z
+      - esdata1:/usr/share/elasticsearch/data
     ports:
       - 9203:9200
       - 9204:9201
@@ -87,3 +70,7 @@ services:
       - omeka-ecosystem
       - elasticsearch
       - search-founda
+
+volumes:
+  esdata1:
+    driver: local

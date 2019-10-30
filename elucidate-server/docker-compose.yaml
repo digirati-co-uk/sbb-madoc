@@ -7,17 +7,16 @@ services:
       - annotation-database:database
     environment:
       - DATABASE_USER=${POSTGRES_USER}
-      - CATALINA_OPTS=-Ddb.url=jdbc:postgresql://database:5432/annotations -Ddb.user=${POSTGRES_USER} -Ddb.password=${POSTGRES_PASSWORD}
+      - CATALINA_OPTS=-Ddb.url=${POSTGRES_CONNECTION:-jdbc:postgresql://database:5432/annotations} -Ddb.user=${POSTGRES_USER} -Ddb.password=${POSTGRES_PASSWORD}
       - BASE_HOST=${ELUCIDATE_BASE_HOST}
       - BASE_PORT=${ELUCIDATE_BASE_PORT}
     ports:
       - 8899:8080
-
   annotation-database:
     container_name: sbb-standalone-annotation-database
     image: "garyttierneydi/elucidate-database:1.4.3-SNAPSHOT"
     environment:
-      - POSTGRES_DB=annotations
+      - POSTGRES_DB=${POSTGRES_DB:-annotations}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
