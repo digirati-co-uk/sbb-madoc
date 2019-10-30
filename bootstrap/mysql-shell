@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+source ./.env
+
+mysql -u ${MYSQL_USER} -p"${MYSQL_PASSWORD}" --port ${MYSQL_PORT} --host ${MYSQL_HOST} ${MYSQL_DATABASE}

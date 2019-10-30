@@ -1,5 +1,7 @@
 var/es
 var/files
 var/mysql
+var/temp
+var/mysql-export
 !var/.gitkeep
 .env

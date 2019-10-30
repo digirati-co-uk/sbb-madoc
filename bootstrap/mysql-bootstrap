@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# Clone the Madoc Platform repo
+
+set -e
+
+source ./.env
+
+if [[ -z "$MYSQL_DATABASE" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_DATABASE is required";
+    exit 1;
+fi;
+
+if [[ -z "$MYSQL_USER" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_USER is required";
+    exit 1;
+fi;
+
+if [[ -z "$MYSQL_PASSWORD" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_PASSWORD is required";
+    exit 1;
+fi;
+
+if [[ -z "$MYSQL_PORT" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_PORT is required";
+    exit 1;
+fi;
+
+if [[ -z "$MYSQL_HOST" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_HOST is required";
+    exit 1;
+fi;
+
+read -p "Do you want to start a migration? (y/n)" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Starting migration...";
+
+    if [ ! -d "./var/temp/madoc-platform" ]; then
+      mkdir -p ./var/temp
+      rm -rf var/temp/madoc-platform
+      git clone https://github.com/digirati-co-uk/madoc-platform.git var/temp/madoc-platform
+    fi;
+
+    function mysqlApply {
+      mysql -u ${MYSQL_USER} -p"${MYSQL_PASSWORD}" --port ${MYSQL_PORT} --host ${MYSQL_HOST} ${MYSQL_DATABASE} < $1
+    }
+    # Start applying files.
+
+    mysqlApply ./var/temp/madoc-platform/database/sql/01-create-database.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/01-create-database.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/02-migration.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/03-property.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/04-resource-class.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/05-resource-template.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/06-resource-template-property.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/07-settings.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/08-vocab.sql
+    mysqlApply ./database/sql/09-user.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/10-enable-modules.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/11-configure-modules.sql
+    mysqlApply ./database/sql/12-site.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/14-public-user.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/15-site-pages.sql
+    mysqlApply ./var/temp/madoc-platform/database/sql/16-site-settings.sql
+    mysqlApply ./database/sql/99-new-modules-1.2.x.sql
+
+    exit 0;
+fi;
+
+echo
+echo "Aborting...";

@@ -12,14 +12,18 @@ services:
       - ../var/es:/usr/share/elasticsearch/data:Z
   mysql:
     container_name: madoc-sbb-standalone-database
-    build:
-      context: ../
-      dockerfile: Dockerfile.db
+    image: mariadb
+    restart: always
+#    build:
+#      context: ../
+#      dockerfile: Dockerfile.db
     volumes:
-      - ../var/mysql:/var/lib/mysql:Z
+      - ../var/mysql-export:/var/lib/mysql:Z
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
       - MYSQL_PORT=${MYSQL_PORT}
+    ports:
+      - "3306:3306"
