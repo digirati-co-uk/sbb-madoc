@@ -16,7 +16,7 @@ services:
     container_name: sbb-standalone-annotation-database
     image: "garyttierneydi/elucidate-database:1.4.3-SNAPSHOT"
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-annotations}
+      - POSTGRES_DB=annotations
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:

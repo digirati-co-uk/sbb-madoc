@@ -1,0 +1,6 @@
+Person;schema_person;norm data (person);e.g. GND;http://ognd.bsz-bw.de/
+Place (e.g. temple);;norm data (place);Geonames;https://www.geonames.org/
+Place (e.g. temple);dcterms_place;text box;;
+Vocabularies;Getty_AAT;list with a fixed list of terms, controlled vocabulary;Getty Vocabularies, Art & Architecture Thesaurus;https://www.getty.edu/research/tools/vocabularies/aat/index.html
+Keywords;schema_keywords;text box;;
+Description;dc_description;text area;;
