@@ -6,28 +6,28 @@ set -e
 
 source ./.env
 
-if [[ -z "$MYSQL_DATABASE" ]]; then
-    echo -e "\033[00;32m Environment variable MYSQL_DATABASE is required";
+if [[ -z "$POSTGRES_DB" ]]; then
+    echo -e "\033[00;32m Environment variable POSTGRES_DB is required";
     exit 1;
 fi;
 
-if [[ -z "$MYSQL_USER" ]]; then
-    echo -e "\033[00;32m Environment variable MYSQL_USER is required";
+if [[ -z "$POSTGRES_USER" ]]; then
+    echo -e "\033[00;32m Environment variable POSTGRES_USER is required";
     exit 1;
 fi;
 
-if [[ -z "$MYSQL_PASSWORD" ]]; then
-    echo -e "\033[00;32m Environment variable MYSQL_PASSWORD is required";
+if [[ -z "$POSTGRES_PASSWORD" ]]; then
+    echo -e "\033[00;32m Environment variable POSTGRES_PASSWORD is required";
     exit 1;
 fi;
 
-if [[ -z "$MYSQL_PORT" ]]; then
-    echo -e "\033[00;32m Environment variable MYSQL_PORT is required";
+if [[ -z "$POSTGRES_PORT" ]]; then
+    echo -e "\033[00;32m Environment variable POSTGRES_PORT is required";
     exit 1;
 fi;
 
-if [[ -z "$MYSQL_HOST" ]]; then
-    echo -e "\033[00;32m Environment variable MYSQL_HOST is required";
+if [[ -z "$POSTGRES_HOST" ]]; then
+    echo -e "\033[00;32m Environment variable POSTGRES_HOST is required";
     exit 1;
 fi;
 
@@ -37,7 +37,74 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
     echo "Starting migration...";
 
-    psql -h hostname -d databasename -U username -f file.sql
+    if [ ! -d "./var/temp/elucidate-server" ]; then
+      mkdir -p ./var/temp
+      rm -rf var/temp/elucidate-server
+      git clone https://github.com/dlcs/elucidate-server.git var/temp/elucidate-server
+      cd var/temp/elucidate-server
+      git checkout 1.4.2
+      cd -
+    fi;
+
+    function pgApply {
+      echo "running..."
+      psql "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${1}" -f $2
+    }
+
+    pgApply postgres var/temp/elucidate-server/elucidate-db-scripts/group_roles/annotations_role.sql
+    pgApply postgres var/temp/elucidate-server/elucidate-db-scripts/login_roles/annotations_user.sql
+    pgApply postgres var/temp/elucidate-server/elucidate-db-scripts/annotations.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_collection.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_body.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_target.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_agent.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_agent_email.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_agent_email_sha1.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_agent_homepage.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_agent_name.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_agent_type.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/tables/annotation_selector.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_body_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_collection_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_creator_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_css_selector_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_data_position_selector_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_fragment_selector_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_svg_selector_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_target_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_text_position_selector_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_text_quote_selector_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/views/annotation_xpath_selector_get.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_body_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_body_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_collection_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_creator_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_creator_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_css_selector_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_css_selector_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_data_position_selector_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_data_position_selector_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_fragment_selector_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_fragment_selector_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_search_by_body.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_search_by_creator.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_search_by_target.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_svg_selector_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_svg_selector_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_target_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_target_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_text_position_selector_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_text_position_selector_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_text_quote_selector_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_text_quote_selector_delete.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_update.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_xpath_selector_create.sql
+    pgApply ${POSTGRES_DB} var/temp/elucidate-server/elucidate-db-scripts/functions/annotation_xpath_selector_delete.sql
+
 
     exit 0;
 fi;
