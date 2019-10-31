@@ -7,7 +7,7 @@ services:
       - annotation-database:database
     environment:
       - DATABASE_USER=${POSTGRES_USER}
-      - CATALINA_OPTS=-Ddb.url=${POSTGRES_CONNECTION:-jdbc:postgresql://database:5432/annotations} -Ddb.user=${POSTGRES_USER} -Ddb.password=${POSTGRES_PASSWORD}
+      - CATALINA_OPTS=-Ddb.url=jdbc:postgresql://database:5432/annotations -Ddb.user="${POSTGRES_USER}" -Ddb.password="${POSTGRES_PASSWORD}"
       - BASE_HOST=${ELUCIDATE_BASE_HOST}
       - BASE_PORT=${ELUCIDATE_BASE_PORT}
     ports:
