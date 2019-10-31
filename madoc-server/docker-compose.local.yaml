@@ -6,19 +6,19 @@ services:
     volumes:
       - ../var/files:/srv/omeka/files:Z
     environment:
-      - OMEKA__DATABASE_HOST=${MYSQL_HOST:-madoc-sbb-standalone-database}
+      - OMEKA__DATABASE_HOST=madoc-sbb-standalone-database
   elasticsearch:
     volumes:
       - ../var/es:/usr/share/elasticsearch/data:Z
   mysql:
     container_name: madoc-sbb-standalone-database
-    image: mariadb
-    restart: always
-#    build:
-#      context: ../
-#      dockerfile: Dockerfile.db
+#    image: mysql:5.6
+#    restart: always
+    build:
+      context: ../
+      dockerfile: Dockerfile.db
     volumes:
-      - ../var/mysql-export:/var/lib/mysql:Z
+      - ../var/mysql:/var/lib/mysql:Z
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=${MYSQL_DATABASE}

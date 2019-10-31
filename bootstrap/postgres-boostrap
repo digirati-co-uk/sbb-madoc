@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+#!/usr/bin/env bash
+
+set -e
+
+source ./.env
+
+if [[ -z "$MYSQL_DATABASE" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_DATABASE is required";
+    exit 1;
+fi;
+
+if [[ -z "$MYSQL_USER" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_USER is required";
+    exit 1;
+fi;
+
+if [[ -z "$MYSQL_PASSWORD" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_PASSWORD is required";
+    exit 1;
+fi;
+
+if [[ -z "$MYSQL_PORT" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_PORT is required";
+    exit 1;
+fi;
+
+if [[ -z "$MYSQL_HOST" ]]; then
+    echo -e "\033[00;32m Environment variable MYSQL_HOST is required";
+    exit 1;
+fi;
+
+read -p "Do you want to start a migration? (y/n)" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Starting migration...";
+
+    psql -h hostname -d databasename -U username -f file.sql
+
+    exit 0;
+fi;
