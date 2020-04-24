@@ -7,4 +7,7 @@ ADD --chown=www-data:www-data ./sbb-madoc-theme /srv/omeka/themes/sbb-madoc-them
 # Add custom translations
 ADD --chown=www-data:www-data ./translations/s/ /srv/omeka/translations/s/
 
+# Memory limit
+ADD --chown=www-data:www-data ./etc/php.ini /etc/php.d/custom.ini
+
 # Add any other configuration needed.
