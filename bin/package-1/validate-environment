@@ -1,0 +1,234 @@
+#!/usr/bin/env bash
+#
+# The following environment variables are required.
+#
+## -- MySQL
+#
+#  MYSQL_DATABASE=omeka_s
+#  MYSQL_USER=omeka_s
+#  MYSQL_PASSWORD=Password123
+#  MYSQL_PORT=3306
+#
+source .env
+
+echo -e "";
+echo -e "";
+
+echo -e "\033[39m Checking MySQL environment variables...";
+err=0
+if [[ -z "$MYSQL_DATABASE" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide MYSQL_DATABASE environment variable";
+fi;
+if [[ -z "$MYSQL_USER" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide MYSQL_USER environment variable";
+fi;
+if [[ -z "$MYSQL_PASSWORD" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide MYSQL_PASSWORD environment variable";
+fi;
+if [[ -z "$MYSQL_PORT" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide MYSQL_PORT environment variable";
+fi;
+
+if [[ $err == 0 ]]; then
+  echo -e "\033[32m   ✔ All MySQL environment variables exist";
+fi;
+echo -e "";
+
+## -- Omeka
+#
+#  APP_ENV=dev
+#
+## -- Gateway
+#
+#  GATEWAY_SECRET=y@@-rwzsqsqTRcuJjp6L8
+#
+#  POSTGRES_DB=postgres
+#  POSTGRES_PORT=5432
+#  POSTGRES_USER=postgres               <-- not needed if external postgres
+#  POSTGRES_PASSWORD=postgres_password  <-- not needed if external postgres
+#
+echo -e "\033[39m Checking Gateway environment variables...";
+err=0
+if [[ -z "$GATEWAY_SECRET" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide GATEWAY_SECRET environment variable - this should be a random string of characters";
+fi;
+if [[ -z "$POSTGRES_DB" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_DB environment variable";
+fi;
+if [[ -z "$POSTGRES_PORT" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_PORT environment variable";
+fi;
+
+if [[ $err == 0 ]]; then
+  echo -e "\033[32m   ✔ All Gateway environment variables exist";
+fi;
+
+echo -e "";
+
+## -- Tasks API
+#
+#  TASKS_QUEUE_LIST=tasks-api,madoc-ts
+#
+echo -e "\033[39m Checking Tasks environment variables...";
+
+if [[ -z "$POSTGRES_PORT" ]]; then
+    echo -e "\033[00;31m   ✗ Please provide TASKS_QUEUE_LIST=tasks-api,madoc-ts environment variable";
+else
+  echo -e "\033[32m   ✔ All Tasks environment variables exist";
+fi;
+
+echo -e "";
+
+
+echo -e "\033[39m Checking All postgres database environment variables...";
+echo -e "";
+## -- Postgres credentials
+#
+#  POSTGRES_MADOC_TS_USER=madoc_ts
+#  POSTGRES_MADOC_TS_SCHEMA=madoc_ts
+#  POSTGRES_MADOC_TS_PASSWORD=madoc_ts_password
+
+echo -e "\033[39m  - Checking madoc postgres database";
+
+err=0
+if [[ -z "$POSTGRES_MADOC_TS_USER" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_MADOC_TS_USER environment variable";
+fi;
+if [[ -z "$POSTGRES_MADOC_TS_SCHEMA" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_MADOC_TS_SCHEMA environment variable";
+fi;
+if [[ -z "$POSTGRES_MADOC_TS_PASSWORD" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_MADOC_TS_PASSWORD environment variable";
+fi;
+
+if [[ $err == 0 ]]; then
+  echo -e "\033[32m   ✔ Madoc postgres environment variables exist";
+fi;
+
+echo -e "";
+
+
+#
+#  POSTGRES_TASKS_API_USER=tasks_api
+#  POSTGRES_TASKS_API_SCHEMA=tasks_api
+#  POSTGRES_TASKS_API_PASSWORD=tasks_api_password
+
+echo -e "\033[39m  - Checking tasks postgres database";
+
+err=0
+if [[ -z "$POSTGRES_TASKS_API_USER" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_TASKS_API_USER environment variable";
+fi;
+if [[ -z "$POSTGRES_TASKS_API_SCHEMA" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_TASKS_API_SCHEMA environment variable";
+fi;
+if [[ -z "$POSTGRES_TASKS_API_PASSWORD" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_TASKS_API_PASSWORD environment variable";
+fi;
+
+if [[ $err == 0 ]]; then
+  echo -e "\033[32m   ✔ Tasks postgres environment variables exist";
+fi;
+
+echo -e "";
+
+#  POSTGRES_MODELS_API_USER=models_api
+#  POSTGRES_MODELS_API_SCHEMA=models_api
+#  POSTGRES_MODELS_API_PASSWORD=models_api_password
+
+echo -e "\033[39m  - Checking models postgres database";
+
+err=0
+if [[ -z "$POSTGRES_MODELS_API_USER" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_MODELS_API_USER environment variable";
+fi;
+if [[ -z "$POSTGRES_MODELS_API_SCHEMA" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_MODELS_API_SCHEMA environment variable";
+fi;
+if [[ -z "$POSTGRES_MODELS_API_PASSWORD" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_MODELS_API_PASSWORD environment variable";
+fi;
+
+if [[ $err == 0 ]]; then
+  echo -e "\033[32m   ✔ Models postgres environment variables exist";
+fi;
+
+echo -e "";
+
+#  POSTGRES_CONFIG_SERVICE_USER=config_service
+#  POSTGRES_CONFIG_SERVICE_SCHEMA=config_service
+#  POSTGRES_CONFIG_SERVICE_PASSWORD=config_service_password
+
+echo -e "\033[39m  - Checking config postgres database";
+
+err=0
+if [[ -z "$POSTGRES_CONFIG_SERVICE_USER" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_CONFIG_SERVICE_USER environment variable";
+fi;
+if [[ -z "$POSTGRES_CONFIG_SERVICE_SCHEMA" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_CONFIG_SERVICE_SCHEMA environment variable";
+fi;
+if [[ -z "$POSTGRES_CONFIG_SERVICE_PASSWORD" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_CONFIG_SERVICE_PASSWORD environment variable";
+fi;
+
+if [[ $err == 0 ]]; then
+  echo -e "\033[32m   ✔ Config postgres environment variables exist";
+fi;
+
+echo -e "";
+
+#  POSTGRES_SEARCH_API_USER=search_api
+#  POSTGRES_SEARCH_API_SCHEMA=search_api
+#  POSTGRES_SEARCH_API_PASSWORD=search_api_password
+
+echo -e "\033[39m  - Checking search postgres database";
+
+err=0
+if [[ -z "$POSTGRES_SEARCH_API_USER" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_SEARCH_API_USER environment variable";
+fi;
+if [[ -z "$POSTGRES_SEARCH_API_SCHEMA" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_SEARCH_API_SCHEMA environment variable";
+fi;
+if [[ -z "$POSTGRES_SEARCH_API_PASSWORD" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_SEARCH_API_PASSWORD environment variable";
+fi;
+
+if [[ $err == 0 ]]; then
+  echo -e "\033[32m   ✔ Search postgres environment variables exist";
+fi;
+
+echo -e "";
+
+#  GATEWAY_HOST=http://localhost:8888
+echo -e "\033[39m  - Checking Gateway host";
+if [[ -z "$GATEWAY_HOST" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide GATEWAY_HOST environment variable - this should be the domain (e.g. http://site.com/)";
+else
+  echo -e "\033[32m   ✔ Gateway host environment variables exist";
+fi;
+echo -e "";
