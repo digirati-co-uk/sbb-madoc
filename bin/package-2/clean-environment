@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+#
+# This will clean the following directories and files:
+#   - Omeka files: /private/var/files
+#   - Elasticsearch: esdata1
+#
+source .env
+
+echo -e "";
+echo -e "";
+
+echo -e "Stopping current madoc instance..";
+docker-compose -f ./madoc-server/docker-compose.yaml down
+
+echo -e "Removing Omeka files";
+rm -rf /private/var/files;
+
+echo -e "Removing Elasticsearch volumes..";
+docker-compose -f ./madoc-server/docker-compose.yaml rm -f
+
+echo -e "\033[32m   ✔ Existing environment cleaned.";
+

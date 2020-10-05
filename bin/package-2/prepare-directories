@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#
+# This will prepare the files directory.
+#
+source .env
+
+echo -e "";
+echo -e "";
+
+echo -e "Preparing directories";
+
+echo -e "\033[32m   ✔ Creating files directory.";
+mkdir -p -m 777 /private/var/files
