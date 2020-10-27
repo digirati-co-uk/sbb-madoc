@@ -65,6 +65,10 @@ if [[ -z "$POSTGRES_PORT" ]]; then
     err=1
     echo -e "\033[00;31m   ✗ Please provide POSTGRES_PORT environment variable";
 fi;
+if [[ -z "$POSTGRES_HOST" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide POSTGRES_HOST environment variable";
+fi;
 
 if [[ $err == 0 ]]; then
   echo -e "\033[32m   ✔ All Gateway environment variables exist";
@@ -78,7 +82,7 @@ echo -e "";
 #
 echo -e "\033[39m Checking Tasks environment variables...";
 
-if [[ -z "$POSTGRES_PORT" ]]; then
+if [[ -z "$TASKS_QUEUE_LIST" ]]; then
     echo -e "\033[00;31m   ✗ Please provide TASKS_QUEUE_LIST=tasks-api,madoc-ts environment variable";
 else
   echo -e "\033[32m   ✔ All Tasks environment variables exist";
@@ -230,5 +234,33 @@ if [[ -z "$GATEWAY_HOST" ]]; then
     echo -e "\033[00;31m   ✗ Please provide GATEWAY_HOST environment variable - this should be the domain (e.g. http://site.com/)";
 else
   echo -e "\033[32m   ✔ Gateway host environment variables exist";
+fi;
+echo -e "";
+
+echo -e "\033[39m Checking SMTP environment variables...";
+err=0
+if [[ -z "$OMEKA_SMTP_HOST" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide OMEKA_SMTP_HOST environment variable";
+fi;
+if [[ -z "$OMEKA_SMTP_PORT" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide OMEKA_SMTP_PORT environment variable";
+fi;
+if [[ -z "$OMEKA_SMTP_SECUIRTY" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide OMEKA_SMTP_SECUIRTY environment variable";
+fi;
+if [[ -z "$OMEKA_SMTP_UNAME" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide OMEKA_SMTP_UNAME environment variable";
+fi;
+if [[ -z "$OMEKA_SMTP_PWORD" ]]; then
+    err=1
+    echo -e "\033[00;31m   ✗ Please provide OMEKA_SMTP_PWORD environment variable";
+fi;
+
+if [[ $err == 0 ]]; then
+  echo -e "\033[32m   ✔ All SMTP environment variables exist";
 fi;
 echo -e "";

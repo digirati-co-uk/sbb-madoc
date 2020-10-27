@@ -12,5 +12,5 @@ while test $# -gt 0; do
   esac
 done;
 
-docker-compose -f ./madoc-server/docker-compose.yaml up -d
+docker-compose -f ./docker-compose.server.yaml up -d
 

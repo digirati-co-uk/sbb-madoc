@@ -10,11 +10,11 @@ while test $# -gt 0; do
     shift
     ;;
     -d|--down)
-        docker-compose -f ./madoc-server/docker-compose.yaml -f ./madoc-server/docker-compose.local.yaml down
+        docker-compose -f ./docker-compose.server.yaml down
       exit 0;
     shift
     ;;
   esac
 done;
 
-docker-compose -f ./madoc-server/docker-compose.yaml stop
+docker-compose -f ./docker-compose.server.yaml stop

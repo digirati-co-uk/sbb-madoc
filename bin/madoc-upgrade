@@ -2,9 +2,9 @@
 
 echo "Upgrading Madoc..."
 
-docker-compose -f ./madoc-server/docker-compose.yaml stop
 git fetch origin master
 git pull origin master
 docker-compose -f ./madoc-server/docker-compose.yaml pull
+docker-compose -f ./madoc-server/docker-compose.yaml stop
 docker-compose -f ./madoc-server/docker-compose.yaml up -d --build
 

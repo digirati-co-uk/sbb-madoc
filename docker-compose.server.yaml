@@ -1,0 +1,164 @@
+version: "3"
+services:
+
+  gateway:
+    image: digirati/madoc-gateway-beta:v2
+    environment:
+      - TYK_GW_STORAGE_HOST=gateway-redis
+      - TYK_GW_SECRET=${GATEWAY_SECRET}
+      - JWT_SERVICES=tasks-api,madoc-api,configuration-api,storage-api
+    ports:
+      - "80:8080"
+    links:
+      - sorting-room
+      - madoc
+      - gateway-redis
+      - tasks-api
+      - model-api
+      - madoc-ts
+      - storage-api
+      - config-service
+      - okra
+      - search
+    volumes:
+      - ./var/certs:/openssl-certs:Z
+    depends_on:
+      - certs
+      - gateway-redis
+
+  madoc:
+    image: digirati/madoc-platform-beta:v2
+    environment:
+      - APP_ENV=${APP_ENV}
+      - OMEKA__DATABASE_HOST=madoc-database
+      - OMEKA__DATABASE_NAME=${MYSQL_DATABASE}
+      - OMEKA__DATABASE_USER=${MYSQL_USER}
+      - OMEKA__DATABASE_PASSWORD=${MYSQL_PASSWORD}
+      - OMEKA__DATABASE_PORT=${MYSQL_PORT}
+      - OMEKA__MAIN_SITE_DOMAIN=${MAIN_SITE_DOMAIN}
+      - OMEKA__INTERNAL_URL=${OMEKA_INTERNAL_URL}
+      - OMEKA__SMTP_HOST=${OMEKA_SMTP_HOST}
+      - OMEKA__SMTP_PORT=${OMEKA_SMTP_PORT}
+      - OMEKA__SMTP_SECURITY=${OMEKA_SMTP_SECUIRTY}
+      - OMEKA__SMTP_USERNAME=${OMEKA_SMTP_UNAME}
+      - OMEKA__SMTP_PASSWORD=${OMEKA_SMTP_PWORD}
+    volumes:
+      - /private/var/files:/srv/omeka/files:Z
+      - ./var/certs:/openssl-certs:Z
+
+  certs:
+    image: digirati/madoc-certs-beta:v2
+    volumes:
+      - ./var/certs:/openssl-certs:Z
+
+  madoc-ts:
+    image: digirati/madoc-ts-beta:v2
+    restart: on-failure
+    volumes:
+      - ./var/certs:/openssl-certs:Z
+      - ./var/jwt:/home/node/app/service-jwt-responses:Z
+      - /private/var/files:/home/node/app/omeka-files:Z
+    environment:
+      - DATABASE_HOST=${POSTGRES_HOST}
+      - DATABASE_NAME=${POSTGRES_DB}
+      - DATABASE_PORT=${POSTGRES_PORT}
+      - DATABASE_USER=${POSTGRES_MADOC_TS_USER}
+      - DATABASE_SCHEMA=${POSTGRES_MADOC_TS_SCHEMA}
+      - DATABASE_PASSWORD=${POSTGRES_MADOC_TS_PASSWORD}
+      - OMEKA__DATABASE_HOST=madoc-database
+      - OMEKA__DATABASE_NAME=${MYSQL_DATABASE}
+      - OMEKA__DATABASE_USER=${MYSQL_USER}
+      - OMEKA__DATABASE_PASSWORD=${MYSQL_PASSWORD}
+      - OMEKA__DATABASE_PORT=${MYSQL_PORT}
+      - OMEKA__URL=http://madoc
+      - REDIS_HOST=gateway-redis
+      - API_GATEWAY=http://gateway:8080
+      - OMEKA_FILE_DIRECTORY=/home/node/app/omeka-files
+      - NODE_ENV=production
+      - MIGRATE=true
+    links:
+      - madoc
+    depends_on:
+      - certs
+
+  tasks-api:
+    image: digirati/madoc-tasks-api-beta:v2
+    restart: on-failure
+    environment:
+      - SERVER_PORT=3000
+      - DATABASE_HOST=${POSTGRES_HOST}
+      - DATABASE_NAME=${POSTGRES_DB}
+      - DATABASE_PORT=${POSTGRES_PORT}
+      - DATABASE_USER=${POSTGRES_TASKS_API_USER}
+      - DATABASE_SCHEMA=${POSTGRES_TASKS_API_SCHEMA}
+      - DATABASE_PASSWORD=${POSTGRES_TASKS_API_PASSWORD}
+      - QUEUE_LIST=${TASKS_QUEUE_LIST}
+      - REDIS_HOST=gateway-redis
+    links:
+      - gateway-redis
+
+  model-api:
+    image: digirati/capture-models:v0.9.1
+    restart: on-failure
+    environment:
+      - SERVER_PORT=3000
+      - DATABASE_HOST=${POSTGRES_HOST}
+      - DATABASE_NAME=${POSTGRES_DB}
+      - DATABASE_PORT=${POSTGRES_PORT}
+      - DATABASE_USER=${POSTGRES_MODELS_API_USER}
+      - DATABASE_SCHEMA=${POSTGRES_MODELS_API_SCHEMA}
+      - DATABASE_PASSWORD=${POSTGRES_MODELS_API_PASSWORD}
+    links:
+
+  sorting-room:
+    image: digirati/madoc-sorting-room-beta:v2
+
+  gateway-redis:
+    image: redis:5-alpine
+
+  config-service:
+    image: digirati/madoc_config_service_django:175410fc5b7dbef4cc259686564fbedeb60c8789
+    environment:
+      - USE_DOCKER=yes
+      - IPYTHONDIR=/app/.ipython
+      - MIGRATE=True
+      - LOAD=False
+      - DJANGO_DEBUG=False
+      - WAITRESS=False
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_CONFIG_SERVICE_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_CONFIG_SERVICE_PASSWORD}
+      - POSTGRES_SCHEMA=${POSTGRES_CONFIG_SERVICE_SCHEMA}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+    volumes:
+      - ./configuration/schemas:/app/configurator/schemas
+      - ./configuration/defaults:/app/configurator/default_config
+
+  storage-api:
+    image: digirati/madoc-storage-api-beta:latest
+    volumes:
+      - /private/var/files/storage-api:/home/node/app/files
+
+  search:
+    image: digirati/madoc-search:latest
+    environment:
+      - BROWSABLE=False
+      - USE_DOCKER=yes
+      - IPYTHONDIR=/app/.ipython
+      - MIGRATE=True
+      - LOAD=False
+      - DJANGO_DEBUG=False
+      - DEBUG=False
+      - WAITRESS=False
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_SEARCH_API_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_SEARCH_API_PASSWORD}
+      - POSTGRES_SCHEMA=${POSTGRES_SEARCH_API_SCHEMA}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+
+  okra:
+    image: digirati/okra:19bf503

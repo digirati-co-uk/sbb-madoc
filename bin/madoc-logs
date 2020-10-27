@@ -12,4 +12,4 @@ while test $# -gt 0; do
   esac
 done;
 
-docker-compose -f ./madoc-server/docker-compose.yaml logs -f --tail=50
+docker-compose -f ./docker-compose.server.yaml logs -f --tail=50
