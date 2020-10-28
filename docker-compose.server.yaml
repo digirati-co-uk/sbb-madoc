@@ -108,7 +108,6 @@ services:
       - DATABASE_USER=${POSTGRES_MODELS_API_USER}
       - DATABASE_SCHEMA=${POSTGRES_MODELS_API_SCHEMA}
       - DATABASE_PASSWORD=${POSTGRES_MODELS_API_PASSWORD}
-    links:
 
   sorting-room:
     image: digirati/madoc-sorting-room-beta:v2
