@@ -8,7 +8,7 @@ services:
       - TYK_GW_SECRET=${GATEWAY_SECRET}
       - JWT_SERVICES=tasks-api,madoc-api,configuration-api,storage-api
     ports:
-      - "80:8080"
+      - "8077:8080"
     links:
       - sorting-room
       - madoc
