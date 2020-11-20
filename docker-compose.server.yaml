@@ -30,11 +30,11 @@ services:
     image: digirati/madoc-platform-beta:v2
     environment:
       - APP_ENV=${APP_ENV}
-      - OMEKA__DATABASE_HOST=${MYSQL_HOST}
-      - OMEKA__DATABASE_NAME=${MYSQL_DATABASE}
+      - OMEKA__DATABASE_HOST=madoc-database
+      - OMEKA__DATABASE_NAME=omeka_s
       - OMEKA__DATABASE_USER=${MYSQL_USER}
       - OMEKA__DATABASE_PASSWORD=${MYSQL_PASSWORD}
-      - OMEKA__DATABASE_PORT=${MYSQL_PORT}
+      - OMEKA__DATABASE_PORT=3334
       - OMEKA__MAIN_SITE_DOMAIN=${MAIN_SITE_DOMAIN}
       - OMEKA__INTERNAL_URL=${OMEKA_INTERNAL_URL}
       - OMEKA__SMTP_HOST=${OMEKA_SMTP_HOST}
@@ -45,6 +45,17 @@ services:
     volumes:
       - /private/var/files:/srv/omeka/files:Z
       - ./var/certs:/openssl-certs:Z
+
+  madoc-database:
+    image: digirati/madoc-platform-beta-db:latest
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=omeka_s
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_PORT=3334
+    volumes:
+      - ./var/mysql_data:/var/lib/mysql:Z
 
   certs:
     image: digirati/madoc-certs-beta:v2
@@ -65,11 +76,11 @@ services:
       - DATABASE_USER=${POSTGRES_MADOC_TS_USER}
       - DATABASE_SCHEMA=${POSTGRES_MADOC_TS_SCHEMA}
       - DATABASE_PASSWORD=${POSTGRES_MADOC_TS_PASSWORD}
-      - OMEKA__DATABASE_HOST=${MYSQL_HOST}
-      - OMEKA__DATABASE_NAME=${MYSQL_DATABASE}
+      - OMEKA__DATABASE_HOST=madoc-database
+      - OMEKA__DATABASE_NAME=omeka_s
       - OMEKA__DATABASE_USER=${MYSQL_USER}
       - OMEKA__DATABASE_PASSWORD=${MYSQL_PASSWORD}
-      - OMEKA__DATABASE_PORT=${MYSQL_PORT}
+      - OMEKA__DATABASE_PORT=3334
       - OMEKA__URL=http://madoc
       - REDIS_HOST=gateway-redis
       - API_GATEWAY=http://gateway:8080
