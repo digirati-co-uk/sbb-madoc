@@ -7,6 +7,8 @@ services:
       - TYK_GW_STORAGE_HOST=gateway-redis
       - TYK_GW_SECRET=${GATEWAY_SECRET}
       - JWT_SERVICES=tasks-api,madoc-api,configuration-api,storage-api
+      - HTTP_PROXY=${HTTP_PROXY}
+      - HTTPS_PROXY=${HTTPS_PROXY}
     ports:
       - "8898:8080"
     links:
