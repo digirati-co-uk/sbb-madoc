@@ -25,8 +25,6 @@ services:
     depends_on:
       - certs
       - gateway-redis
-    networks:
-      - madoc-network
 
   madoc:
     image: digirati/madoc-platform-beta:v2
@@ -50,8 +48,6 @@ services:
     volumes:
       - /private/var/files:/srv/omeka/files:Z
       - ./var/certs:/openssl-certs:Z
-    networks:
-      - madoc-network
 
   madoc-database:
     image: digirati/madoc-platform-beta-db:latest
@@ -63,8 +59,6 @@ services:
       - MYSQL_PORT=3334
     volumes:
       - ./var/mysql_data:/var/lib/mysql:Z
-    networks:
-      - madoc-network
 
   certs:
     image: digirati/madoc-certs-beta:v2
@@ -100,8 +94,6 @@ services:
       - madoc
     depends_on:
       - certs
-    networks:
-      - madoc-network
 
   tasks-api:
     image: digirati/madoc-tasks-api-beta:v2
@@ -118,8 +110,6 @@ services:
       - REDIS_HOST=gateway-redis
     links:
       - gateway-redis
-    networks:
-      - madoc-network
 
   model-api:
     image: digirati/capture-models:v0.9.1
@@ -132,16 +122,12 @@ services:
       - DATABASE_USER=${POSTGRES_MODELS_API_USER}
       - DATABASE_SCHEMA=${POSTGRES_MODELS_API_SCHEMA}
       - DATABASE_PASSWORD=${POSTGRES_MODELS_API_PASSWORD}
-    networks:
-      - madoc-network
 
   sorting-room:
     image: digirati/madoc-sorting-room-beta:v2
 
   gateway-redis:
     image: redis:5-alpine
-    networks:
-      - madoc-network
 
   config-service:
     image: digirati/madoc_config_service_django:175410fc5b7dbef4cc259686564fbedeb60c8789
@@ -162,15 +148,11 @@ services:
     volumes:
       - ./configuration/schemas:/app/configurator/schemas
       - ./configuration/defaults:/app/configurator/default_config
-    networks:
-      - madoc-network
 
   storage-api:
     image: digirati/madoc-storage-api-beta:latest
     volumes:
       - /private/var/files/storage-api:/home/node/app/files
-    networks:
-      - madoc-network
 
   search:
     image: digirati/madoc-search:latest
@@ -190,15 +172,6 @@ services:
       - POSTGRES_SCHEMA=${POSTGRES_SEARCH_API_SCHEMA}
       - POSTGRES_DB=${POSTGRES_DB}
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
-    networks:
-      - madoc-network
 
   okra:
     image: digirati/okra:19bf503
-    networks:
-      - madoc-network
-
-
-networks:
-  madoc-network:
-    external: true
