@@ -44,6 +44,9 @@ services:
       - OMEKA__SMTP_SECURITY=${OMEKA_SMTP_SECUIRTY}
       - OMEKA__SMTP_USERNAME=${OMEKA_SMTP_UNAME}
       - OMEKA__SMTP_PASSWORD=${OMEKA_SMTP_PWORD}
+      - HTTP_PROXY=${HTTP_PROXY}
+      - HTTPS_PROXY=${HTTPS_PROXY}
+      - HTTP_PROXY_PORT=${HTTP_PROXY_PORT}
     volumes:
       - /private/var/files:/srv/omeka/files:Z
       - ./var/certs:/openssl-certs:Z
