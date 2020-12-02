@@ -5,3 +5,4 @@ var/temp
 var/mysql-export
 !var/.gitkeep
 .env
+.terraform
