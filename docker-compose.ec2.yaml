@@ -39,7 +39,7 @@ services:
       - OMEKA__DATABASE_PORT=${MYSQL_PORT}
       - OMEKA__MAIN_SITE_DOMAIN=${MAIN_SITE_DOMAIN}
       - OMEKA__INTERNAL_URL=${OMEKA_INTERNAL_URL}
-      - OMEKA__SMTP_HOST=email-smtp.us-east-1.amazonaws.com
+      - OMEKA__SMTP_HOST=email-smtp.eu-west-1.amazonaws.com
       - OMEKA__SMTP_PORT=587
       - OMEKA__SMTP_SECURITY=tls
       - OMEKA__SMTP_USERNAME=${OMEKA_SMTP_UNAME}
